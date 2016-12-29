@@ -1,5 +1,5 @@
 A simple app for my WebOS TV (LG) to watch Digi24 (Romanian news channel).
-I'm not using Enyo since the UI is as simple as it gets.
+I'm not using Enyo since the UI is as simple as it gets. Instead the whole app uses simple HTML5 and JS, no frameworks :D
 
 A known issue is that the app always uses the fallback URL for the stream. I think this is due to cross domain blocking. Contact´me if you have suggestions :D
 
