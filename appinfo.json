@@ -1,0 +1,10 @@
+{
+    "vendor": "My Company",
+    "largeIcon": "largeIcon.png",
+    "icon": "icon.png",
+    "main": "index.html",
+    "id": "de.marius.digi24basic",
+    "title": "application",
+    "type": "web",
+    "version": "0.1.0"
+}

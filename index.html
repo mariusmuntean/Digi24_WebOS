@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+body {
+	width: 100%;
+	height: 100%;
+	background-color: #202020;
+}
+
+div {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	display: table;
+}
+
+h1 {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	color: #FFFFFF;
+}
+
+div.rootLayoutDiv {
+	margin: 0px;
+	background: black;
+	display: table-cell;
+	vertical-align: middle;
+	background: black;
+}
+
+video.videoPlayer {
+	display: block;
+	width: 100%;
+	height: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-left: auto;
+}
+</style>
+<script src="webOSjs-0.1.0/webOS.js" charset="utf-8"></script>
+<script type="text/javascript">
+	//sample code for calling LS2 API
+	var lunaReq = webOS.service.request("luna://com.palm.systemservice", {
+		method : "clock/getTime",
+		parameters : {},
+		onSuccess : function(args) {
+			console.log("UTC:", args.utc);
+		},
+		onFailure : function(args) {
+		}
+	});
+</script>
+</head>
+<body onload="handleOnLoad()">
+	<script type="text/javascript">
+		function handleOnLoad() {
+			listenForRemoteControl();
+			setUrlAndStartPlayback();
+		}
+
+		function listenForRemoteControl() {
+			// PRO TIP: use the sample app to get the key codes - http://webostv.developer.lge.com/develop/code-samples/remote-control/
+			document.addEventListener("keydown", function(inEvent) {
+				var videoPlayer = document.getElementById("videoPlayer");
+				var keyCode = inEvent.keyCode;
+				var params = {}
+
+				if (keyCode == 415) { // PLAY
+					params = {
+						message : "PLAY"
+					}
+					videoPlayer.play();
+				}
+				if (keyCode == 19) { // PAUSE
+					params = {
+						message : "PAUSE"
+					}
+					videoPlayer.pause();
+				}
+
+				if (keyCode == 413) { // STOP
+					params = {
+						message : "STOP"
+					}
+					videoPlayer.load();
+					videoPlayer.pause();
+				}
+				webOS.notification.showToast(params, null);
+			});
+		}
+
+		function setUrlAndStartPlayback() {
+			var videoPlayer = document.getElementById("videoPlayer");
+			videoPlayer.src = getStreamUrl();
+			videoPlayer.play();
+		}
+
+		function getStreamUrl() {
+			var fallbackStreamUrl = "http://82.76.40.76:80/digi24edge/digi24live/index.m3u8";
+			//var fallbackStreamUrl = "http://daserste_live-lh.akamaihd.net/i/daserste_de@91204/master.m3u8";
+			// ToDo: take care of cross domain blocking. Right now the fallback is used all the time due to this
+			var request = new XMLHttpRequest();
+			var newestStreamUrlLocation = "https://onedrive.live.com/download?cid=53493968FF2C2533&resid=53493968FF2C2533%219553&authkey=AIs3StHfkohSYvI";
+			request.open("GET", newestStreamUrlLocation, true);
+			request.send(null);
+
+			var response = fallbackStreamUrl;
+			console.log("Using fallbak URL", fallbackStreamUrl);
+			if (request.readyState === 4) {
+				if (request.status === 200) {
+					response = request.responseText;
+					console.log("Switching to remote URL: ", response);
+				}
+			}
+			return response;
+		}
+	</script>
+	<div class="rootLayoutDiv">
+		<video id="videoPlayer" class="videoPlayer" controls>
+			<source type="application/x-mpegURL">
+			Ceva nu este in regula cu layoutul aplicatiei. Nu ar trebui sa vezi
+			asta :D
+		</video>
+	</div>
+</body>
+</html>
